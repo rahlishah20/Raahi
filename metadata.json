@@ -1,0 +1,6 @@
+{
+  "name": "RAAHI",
+  "description": "Safety-aware navigation mobile application for Karachi. Go your way. Safer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
