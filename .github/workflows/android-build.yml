@@ -1,13 +1,7 @@
 name: RAAHI Android CI & Build
 
 on:
-  push:
-    branches: [ "main", "master" ]
-    tags:
-      - 'v*'
-  pull_request:
-    branches: [ "main", "master" ]
-  workflow_dispatch:
+  workflow_dispatch: # Run manually only (from GitHub Actions tab)
 
 permissions:
   contents: write
