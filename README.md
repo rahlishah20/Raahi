@@ -1,4 +1,4 @@
-
+# RAAHI
 
 <p align="center">
   <img src="public/assets/Raahi-App.png" alt="Raahi App Banner" width="100%"/>
@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/Min%20SDK-24-brightgreen?style=for-the-badge&logo=android&logoColor=white" alt="Min SDK 24"/>
   <img src="https://img.shields.io/badge/Target%20SDK-36-blue?style=for-the-badge&logo=android&logoColor=white" alt="Target SDK 36"/>
   <img src="https://img.shields.io/badge/Version-1.0-orange?style=for-the-badge" alt="Version 1.0"/>
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License MIT"/>
+  <img src="https://img.shields.io/badge/License-All%20Rights%20Reserved-red?style=for-the-badge" alt="License All Rights Reserved"/>
 </p>
 
 <div align="center">
@@ -130,7 +130,7 @@ The current version of RAAHI contains the following functional modules:
 ## 6. Project Structure
 
 ```
-Raahi
+RAAhi2
 ├── app/
 │   ├── src/
 │   │   ├── androidTest/
@@ -473,8 +473,20 @@ The current release is a specialized prototype with the following deliberate con
 
 ## 15. Safety and Data Disclaimer
 
-**IMPORTANT NOTICE & COMMUTER ADVISORY**
+> **IMPORTANT NOTICE & COMMUTER ADVISORY**
+>
+> 1. **Relative Safety Indicator**: All safety scores, corridor badges, and warnings presented in RAAHI represent **relative comparative assessments based on available heuristic signals**. They do **NOT** constitute a guarantee, warranty, or absolute assurance of personal safety or route security.
+> 2. **Prototype Data**: Incident frequencies, street lighting estimates, and environmental disruptions in this prototype utilize simulated models, curated spatial reference points, and mock commuter contributions for demonstration purposes. They must not be interpreted as official crime statistics from the Sindh Police or Government of Pakistan.
+> 3. **Commuter Discretion**: Commuters must always prioritize their own situational awareness, official emergency advisories, real-world signage, law enforcement instructions, and personal judgment when traveling across Karachi.
 
- 1. **Relative Safety Indicator**: All safety scores, corridor badges, and warnings presented in RAAHI represent **relative comparative assessments based on available heuristic signals**. They do **NOT** constitute a guarantee, warranty, or absolute assurance of personal safety or route security.
- 2. **Prototype Data**: Incident frequencies, street lighting estimates, and environmental disruptions in this prototype utilize simulated models, curated spatial reference points, and mock commuter contributions for demonstration purposes. They must not be interpreted as official crime statistics from the Sindh Police or Government of Pakistan.
- 3. **Commuter Discretion**: Commuters must always prioritize their own situational awareness, official emergency advisories, real-world signage, law enforcement instructions, and personal judgment when traveling across Karachi.
+---
+
+## 16. Ownership & Usage Rights
+
+> **ALL RIGHTS RESERVED**
+>
+> This project, including its source code, design, branding, documentation, and all associated assets, is the sole property of its rightful owner. No part of this repository may be copied, modified, distributed, sublicensed, or used — in whole or in part, for personal, academic, or commercial purposes — without the prior written permission of the owner.
+>
+> Unauthorized use, reproduction, or distribution of this project or any of its components is strictly prohibited and may result in legal action.
+>
+> For permissions or licensing inquiries, please contact the repository owner directly.
