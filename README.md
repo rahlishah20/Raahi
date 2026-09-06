@@ -130,7 +130,7 @@ The current version of RAAHI contains the following functional modules:
 ## 6. Project Structure
 
 ```
-RAAhi2
+Raahi
 ├── app/
 │   ├── src/
 │   │   ├── androidTest/
