@@ -328,36 +328,39 @@ RAAhi2
 
 ---
 
-## 7. Google Maps Configuration
-
-The application uses Google Maps SDK for Android to render the interactive Karachi map canvas.
-
-1. Obtain an API key from the [Google Cloud Console](https://console.cloud.google.com/) with **Maps SDK for Android** enabled.
+## ## 7. MapTiler Configuration
+The application uses MapTiler (via a WebView-based Leaflet map) to render the interactive Karachi map canvas.
+1. Obtain an API key from the [MapTiler Cloud dashboard](https://cloud.maptiler.com/).
 2. Add your key to your `.env` file:
-   ```env
-   MAPS_API_KEY=AIzaSyYourRealKeyHere
-   ```
-3. During build, the Secrets Gradle Plugin injects `MAPS_API_KEY` into `AndroidManifest.xml`:
-   ```xml
-   <meta-data
-       android:name="com.google.android.geo.API_KEY"
-       android:value="${MAPS_API_KEY}" />
-   ```
-4. If running without a Google Maps key, the application will still launch safely; vector map tiles will display a placeholder grid while all application panels, route calculations, safe points, and safety intelligence remain fully operational.
+```env
+   MAPTILER_API_KEY=your_real_maptiler_key_here
+```
+3. During build, `app/build.gradle.kts` reads `.env` and exposes the key as
+   `BuildConfig.MAPTILER_API_KEY`, which `MapTilerView.kt` uses to load map tiles.
+4. If running without a valid MapTiler key, the application will still launch
+   safely and display a clear "Map unavailable" placeholder state while all
+   other application panels, route calculations, safe points, and safety
+   intelligence remain fully operational.
 
 ---
 
-## 8. Google Routes Configuration
-
-RAAHI connects to the modern **Google Routes API v2** (`https://routes.googleapis.com/directions/v2:computeRoutes`) to fetch real-world polylines, travel durations, and turn-by-turn steps.
-
-1. Enable the **Routes API** in your Google Cloud project.
+## 8. TomTom Routing Configuration
+RAAHI connects to the **TomTom Routing API** to fetch real-world polylines,
+travel durations, and turn-by-turn route alternatives for Karachi.
+1. Obtain an API key from the [TomTom Developer Portal](https://developer.tomtom.com/)
+   under the "Maps and Navigation SDK for Android" product (free tier available).
 2. In `.env`, set:
-   ```env
-   ROUTES_API_KEY=AIzaSyYourRealKeyHere
-   ```
-3. **Automatic Fallback Mode**: When no valid Google Cloud key is provided (or when offline), `RouteRepositoryImpl` automatically falls back to its built-in Karachi Corridor Engine. This engine generates authentic multi-route alternatives for major Karachi arterial corridors (Khayaban-e-Iqbal, Shahrah-e-Faisal, Mai Kolachi Bypass, etc.) without crashing or failing.
-
+```env
+   TOMTOM_API_KEY=your_real_tomtom_key_here
+```
+3. During build, `app/build.gradle.kts` reads `.env` and exposes the key as
+   `BuildConfig.TOMTOM_API_KEY`, which `RouteRepositoryImpl` uses to call the
+   TomTom Routing API.
+4. **Automatic Fallback Mode**: When no valid TomTom key is provided (or when
+   offline), `RouteRepositoryImpl` automatically falls back to its built-in
+   Karachi Corridor Engine. This engine generates authentic multi-route
+   alternatives for major Karachi arterial corridors (Khayaban-e-Iqbal,
+   Shahrah-e-Faisal, Mai Kolachi Bypass, etc.) without crashing or failing.
 ---
 
 ## 9. Environment / API Configuration
@@ -371,9 +374,9 @@ cp .env.example .env
 Populate the keys as required:
 
 ```env
-# Google Maps & Routes API Key
-MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
-ROUTES_API_KEY=YOUR_GOOGLE_ROUTES_API_KEY
+#  MAPTILER Maps & TomTom Routes API Key
+MAPTILER_API_KEY=your_real_maptiler_key_here
+ROUTES_API_KEY=your_real_tomtom_key_here
 
 # Optional: Gemini API Key (if server-side AI explanations are enabled)
 GEMINI_API_KEY=YOUR_GEMINI_API_KEY
