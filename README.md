@@ -485,7 +485,7 @@ The current release is a specialized prototype with the following deliberate con
 
  **ALL RIGHTS RESERVED**
 
- - This project, including its source code, design, branding, documentation, and all associated assets, is the sole property of its rightful owner. No part of this repository may be copied, modified, distributed, sublicensed, or used — in whole or in part, for personal, academic, or commercial purposes — without the prior written permission of the owner.
+ - This project, including its source code, design, branding, documentation, and all associated assets, is the sole property of its rightful owner. No part of this repository may be copied, modified, distributed, sublicensed, or used - in whole or in part, for personal, academic, or commercial purposes - without the prior written permission of the owner.
 
  - Unauthorized use, reproduction, or distribution of this project or any of its components is strictly prohibited and may result in legal action.
 
