@@ -1,4 +1,4 @@
-# RAAHI
+
 
 <p align="center">
   <img src="public/assets/Raahi-App.png" alt="Raahi App Banner" width="100%"/>
@@ -55,7 +55,7 @@ RAAHI's core premise is **Safety Intelligence in Motion**:
 The current version of RAAHI contains the following functional modules:
 
 ### A. Karachi Map & Visual Exploration
-- Interactive Google Maps integration centered on Karachi (`24.8607° N, 67.0011° E`).
+- Interactive **MapTiler**-powered map (rendered via an embedded MapTiler map view) centered on Karachi (`24.8607° N, 67.0011° E`).
 - Real-time GPS location provider with fallback to Karachi South/Clifton coordinates when hardware GPS is unavailable or running in testing environments.
 - Interactive Safe Point map markers with category-specific tinting (Hospitals, Police Facilitation, Fuel Stations, 24/7 Pharmacies).
 
@@ -65,8 +65,8 @@ The current version of RAAHI contains the following functional modules:
 - Direct selection of Karachi destinations to immediately initiate multi-route planning.
 
 ### C. Multi-Route Planning & Alternatives
-- Support for live Google Routes API (`directions/v2:computeRoutes`) when an API key is configured.
-- Built-in fallback to the **Karachi Corridor Routing Engine**, providing authentic alternative routes (e.g. *Via Khayaban-e-Iqbal & Club Rd*, *Via Shahrah-e-Faisal & Cantt*, *Via Mai Kolachi Bypass*) when operating without an active Google Cloud API key.
+- Support for the live **TomTom Routing API** (`routing/1/calculateRoute`) when an API key is configured, including live-traffic-aware travel times and route alternatives.
+- Built-in fallback to the **Karachi Corridor Routing Engine**, providing authentic alternative routes (e.g. *Via Khayaban-e-Iqbal & Club Rd*, *Via Shahrah-e-Faisal & Cantt*, *Via Mai Kolachi Bypass*) when operating without an active TomTom API key or when the request fails.
 - Route comparison displaying duration, distance, relative safety score, and primary safety highlights.
 
 ### D. Safety Intelligence Engine & "Explain Why" Sheet
@@ -111,9 +111,9 @@ The current version of RAAHI contains the following functional modules:
 - **Architecture**: MVVM (Model-View-ViewModel) + Clean Architecture (Domain, Data, Presentation)
 - **Asynchronous Flow**: Kotlin Coroutines & `StateFlow` / `collectAsStateWithLifecycle`
 - **Networking**: Retrofit 2.12.0 + OkHttp 4.10.0 + Moshi 1.15.2 (Kotlin JSON codegen)
-- **Maps & Location**: Google Maps Compose 6.4.1, Play Services Maps 19.0.0, Play Services Location 21.3.0
+- **Maps & Routing**: MapTiler SDK (interactive Karachi map canvas) + TomTom Routing API (multi-route calculation with live traffic), Play Services Location 21.3.0
 - **Local Persistence**: Android Jetpack Room 2.7.0 (with KSP)
-- **Secrets Management**: Google Maps Secrets Gradle Plugin (`.env` / `BuildConfig`)
+- **Secrets Management**: Google Maps Secrets Gradle Plugin (`.env` / `BuildConfig`) — used purely as the `.env`-based secrets injection mechanism, not for Google Maps itself
 - **Testing**: JUnit 4, Robolectric 4.16.1, Roborazzi 1.59.0 for Compose JVM screenshot testing
 
 ---
@@ -325,38 +325,34 @@ RAAhi2
 ├── splash_map_bg.jpg
 ├── test_icon.png
 └── test_map.jpg
+```
 
 ---
 
-## 7. Google Maps Configuration
+## 7. MapTiler Configuration
 
-The application uses Google Maps SDK for Android to render the interactive Karachi map canvas.
+The application uses **MapTiler** to render the interactive Karachi map canvas (loaded through an embedded MapTiler-powered map view, `MapTilerView.kt`). Google Maps SDK is **not** used for map rendering in this project — the corresponding Google Maps API key meta-data entry is explicitly removed in `AndroidManifest.xml`.
 
-1. Obtain an API key from the [Google Cloud Console](https://console.cloud.google.com/) with **Maps SDK for Android** enabled.
+1. Obtain an API key from the [MapTiler Cloud](https://cloud.maptiler.com/) dashboard.
 2. Add your key to your `.env` file:
    ```env
-   MAPS_API_KEY=AIzaSyYourRealKeyHere
+   MAPTILER_API_KEY=YOUR_MAPTILER_API_KEY
    ```
-3. During build, the Secrets Gradle Plugin injects `MAPS_API_KEY` into `AndroidManifest.xml`:
-   ```xml
-   <meta-data
-       android:name="com.google.android.geo.API_KEY"
-       android:value="${MAPS_API_KEY}" />
-   ```
-4. If running without a Google Maps key, the application will still launch safely; vector map tiles will display a placeholder grid while all application panels, route calculations, safe points, and safety intelligence remain fully operational.
+3. `MapTilerView.kt` reads this key at runtime and injects it into the map view to load Karachi-centered vector tiles.
+4. If running without a valid MapTiler key, the map view will fail to load tiles, but all other application panels, route calculations, safe points, and safety intelligence remain fully operational.
 
 ---
 
-## 8. Google Routes Configuration
+## 8. TomTom Routing Configuration
 
-RAAHI connects to the modern **Google Routes API v2** (`https://routes.googleapis.com/directions/v2:computeRoutes`) to fetch real-world polylines, travel durations, and turn-by-turn steps.
+RAAHI connects to the **TomTom Routing API** (`https://api.tomtom.com/routing/1/calculateRoute/{locations}/json`) to fetch real-world routes, live-traffic-aware travel durations, distances, and turn-by-turn guidance instructions.
 
-1. Enable the **Routes API** in your Google Cloud project.
+1. Create a free account and generate an API key from the [TomTom Developer Portal](https://developer.tomtom.com/).
 2. In `.env`, set:
    ```env
-   ROUTES_API_KEY=AIzaSyYourRealKeyHere
+   TOMTOM_API_KEY=YOUR_TOMTOM_API_KEY
    ```
-3. **Automatic Fallback Mode**: When no valid Google Cloud key is provided (or when offline), `RouteRepositoryImpl` automatically falls back to its built-in Karachi Corridor Engine. This engine generates authentic multi-route alternatives for major Karachi arterial corridors (Khayaban-e-Iqbal, Shahrah-e-Faisal, Mai Kolachi Bypass, etc.) without crashing or failing.
+3. **Automatic Fallback Mode**: When no valid TomTom key is provided (or when offline / the request fails), `RouteRepositoryImpl` automatically falls back to its built-in Karachi Corridor Engine. This engine generates authentic multi-route alternatives for major Karachi arterial corridors (Khayaban-e-Iqbal, Shahrah-e-Faisal, Mai Kolachi Bypass, etc.) without crashing or failing.
 
 ---
 
@@ -371,15 +367,19 @@ cp .env.example .env
 Populate the keys as required:
 
 ```env
-# Google Maps & Routes API Key
-MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
-ROUTES_API_KEY=YOUR_GOOGLE_ROUTES_API_KEY
+# MapTiler API Key (interactive Karachi map rendering)
+MAPTILER_API_KEY=YOUR_MAPTILER_API_KEY
+
+# TomTom Routing API Key (route calculation, live traffic, turn-by-turn)
+TOMTOM_API_KEY=YOUR_TOMTOM_API_KEY
 
 # Optional: Gemini API Key (if server-side AI explanations are enabled)
 GEMINI_API_KEY=YOUR_GEMINI_API_KEY
 ```
 
 > **Security Notice**: `.env` is explicitly listed in `.gitignore` and must **never** be committed to version control.
+
+> **Note**: The project's build config still declares a `MAPS_API_KEY` secrets placeholder for backward compatibility with the Secrets Gradle Plugin setup, but it is not used to render maps in the current version — MapTiler and TomTom are the active providers.
 
 ---
 
@@ -467,14 +467,14 @@ The current release is a specialized prototype with the following deliberate con
 1. **Karachi-Exclusive Geographic Scope**: The spatial databases, Safe Points, and corridor models are specifically calibrated for Karachi, Pakistan. Other cities are not currently modeled.
 2. **Safety Signals Calibration**: Safety calculations are computed using a prototype intelligence engine incorporating calibrated baseline weights and simulated real-time events. They do not connect to official law enforcement live feeds.
 3. **Simulated Sensor Feed**: In headless emulator environments where hardware GPS or gyroscope are inactive, the app defaults to simulated movement along the selected corridor.
-4. **Offline Resilience**: When internet access is disconnected or Google Cloud quotas are reached, routing automatically switches to the built-in Karachi corridor approximations.
+4. **Offline Resilience**: When internet access is disconnected, the TomTom key is invalid, or API quotas are reached, routing automatically switches to the built-in Karachi corridor approximations.
 
 ---
 
 ## 15. Safety and Data Disclaimer
 
-> **IMPORTANT NOTICE & COMMUTER ADVISORY**
->
-> 1. **Relative Safety Indicator**: All safety scores, corridor badges, and warnings presented in RAAHI represent **relative comparative assessments based on available heuristic signals**. They do **NOT** constitute a guarantee, warranty, or absolute assurance of personal safety or route security.
-> 2. **Prototype Data**: Incident frequencies, street lighting estimates, and environmental disruptions in this prototype utilize simulated models, curated spatial reference points, and mock commuter contributions for demonstration purposes. They must not be interpreted as official crime statistics from the Sindh Police or Government of Pakistan.
-> 3. **Commuter Discretion**: Commuters must always prioritize their own situational awareness, official emergency advisories, real-world signage, law enforcement instructions, and personal judgment when traveling across Karachi.
+**IMPORTANT NOTICE & COMMUTER ADVISORY**
+
+ 1. **Relative Safety Indicator**: All safety scores, corridor badges, and warnings presented in RAAHI represent **relative comparative assessments based on available heuristic signals**. They do **NOT** constitute a guarantee, warranty, or absolute assurance of personal safety or route security.
+ 2. **Prototype Data**: Incident frequencies, street lighting estimates, and environmental disruptions in this prototype utilize simulated models, curated spatial reference points, and mock commuter contributions for demonstration purposes. They must not be interpreted as official crime statistics from the Sindh Police or Government of Pakistan.
+ 3. **Commuter Discretion**: Commuters must always prioritize their own situational awareness, official emergency advisories, real-world signage, law enforcement instructions, and personal judgment when traveling across Karachi.
